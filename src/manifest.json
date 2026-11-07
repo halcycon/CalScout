@@ -2,14 +2,52 @@
   "manifest_version": 2,
   "name": "CalScout",
   "version": "0.1.0",
-  "description": "Native CalDAV subscription feasibility prototype. Not a production release.",
-  "browser_specific_settings": {"gecko": {"id": "calscout@halcycon", "strict_min_version": "156.0", "strict_max_version": "156.*"}},
-  "permissions": [],
-  "browser_action": {"default_title": "CalDAV Discovery", "default_popup": "ui/prototype.html"},
+  "description": "Discover newly shared CalDAV calendars and subscribe using Thunderbird\u2019s native provider.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "calscout@halcycon",
+      "strict_min_version": "156.0",
+      "strict_max_version": "156.*"
+    }
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications",
+    "accountsRead"
+  ],
+  "browser_action": {
+    "default_title": "CalDAV Discovery",
+    "default_popup": "ui/popup.html"
+  },
   "experiment_apis": {
     "calendarBridge": {
       "schema": "experiments/calendarBridge/schema.json",
-      "parent": {"scopes": ["addon_parent"], "paths": [["calendarBridge"]], "script": "experiments/calendarBridge/api.js"}
+      "parent": {
+        "scopes": [
+          "addon_parent"
+        ],
+        "paths": [
+          [
+            "calendarBridge"
+          ]
+        ],
+        "script": "experiments/calendarBridge/api.js"
+      }
     }
+  },
+  "background": {
+    "type": "module",
+    "scripts": [
+      "background/background.mjs"
+    ]
+  },
+  "options_ui": {
+    "page": "ui/manage.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "32": "ui/icon.svg",
+    "64": "ui/icon.svg"
   }
 }

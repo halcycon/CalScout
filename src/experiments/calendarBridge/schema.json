@@ -47,6 +47,44 @@
         }
       },
       {
+        "name": "scan",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "account",
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "sourceId": {
+                "type": "string",
+                "optional": true
+              },
+              "allowLocalhost": {
+                "type": "boolean",
+                "optional": true
+              }
+            }
+          },
+          {
+            "name": "allowPrompt",
+            "type": "boolean",
+            "optional": true
+          }
+        ],
+        "returns": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "any"
+          }
+        }
+      },
+      {
         "name": "register",
         "type": "function",
         "async": true,
@@ -71,6 +109,10 @@
               "allowLocalhost": {
                 "type": "boolean",
                 "optional": true
+              },
+              "readOnly": {
+                "type": "boolean",
+                "optional": true
               }
             }
           }
@@ -93,6 +135,30 @@
             "type": "boolean"
           }
         ]
+      },
+      {
+        "name": "candidates",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "email",
+            "type": "string"
+          }
+        ],
+        "returns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    ],
+    "events": [
+      {
+        "name": "onChanged",
+        "type": "function",
+        "parameters": []
       }
     ]
   }

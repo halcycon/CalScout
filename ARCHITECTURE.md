@@ -68,3 +68,52 @@ Discovery must issue only metadata PROPFIND requests, never event REPORTs.
   collection availability from subscription state. GPL concepts only; no code copied.
 * [Stalwart WebDAV](https://stalw.art/docs/collaboration/webdav/): assisted
   discovery is server-dependent and requires real group ACL integration tests.
+
+## Implemented discovery and orchestration
+
+The namespace-aware parser accepts successful 2xx propstats only, rejects DTDs,
+entities, malformed XML and responses over 2 MiB, and parses metadata without
+fetching events. Traversal follows every advertised home set and group principal,
+with cycle detection and a 64-request bound. Redirects and hrefs must remain on
+the configured origin. A discovered authenticated principal becomes the next
+scan's starting point, so a single revoked source collection cannot block all
+future rediscovery. Cross-origin discovery needs a separately configured origin.
+
+The transport uses native `CalDavGenericRequest`, `CalDavSession` and
+`cal.auth.Prompt`. A small session adapter uses native OAuth2Module.connect's UI
+flag, since native getAccessToken always allows UI. Background scans deny prompts;
+explicit per-account sign-in permits one native password prompt. Failed credentials
+are not retried in a loop. No password or token crosses the privileged API boundary.
+
+`DiscoveryService` serializes state changes; concurrent scans join the same promise.
+A one-minute alarm checks persisted per-account deadlines (30-minute discovery by
+default), with exponential backoff capped at 120 minutes plus jitter. Auth failures
+block unattended retries until a manual scan. Startup schedules its first tick
+once account/calendar services have had time to initialize. Calendar registry and
+mail account changes are observed. Manual-only mode creates no repeating alarm.
+
+Storage version 1 persists account settings, resource IDs, aliases, subscription
+IDs, suppression decisions, timestamps, failures and a bounded structured local
+log. Unknown storage versions fail without resetting data. Account boundaries use
+origin plus native authentication username. Native IDs removed by the user become
+suppressed. Stable DAV resource IDs and URL aliases reconcile moved resources.
+
+Only complete successful scans count absence. One absence is unconfirmed; two
+mark unavailable; no native subscriptions are deleted. Optional disabling after
+three absent scans is restricted to owned calendars and preserves local data.
+Network, auth, XML and partial-listing failures do not count as absence.
+
+## Setup and UI
+
+Existing HTTPS native CalDAV accounts are imported. Without one, setup can read
+mail identity addresses (accountsRead) and offer CalDAV SRV/TXT candidates, then
+an HTTPS domain well-known endpoint. The mail hostname is never assumed to be
+the CalDAV hostname. Users can supply an endpoint as a fallback. Account setup
+explicitly invokes native authentication. Mozilla autoconfiguration metadata is
+investigated but not implemented; no password is taken from a mail account.
+
+A first-run review gate blocks automatic subscription, even if the policy is set
+to auto, until explicitly completed. Options provide resource actions, account
+inclusion, interval/policy preferences, suppression restoration and diagnostics.
+All server-supplied labels use textContent. The UI has no remote scripts, fonts or
+assets. Native subscription sync is independent of every background/UI module.

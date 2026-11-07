@@ -15,3 +15,8 @@ Research references (no implementation files copied):
 Radicale 3.9.0 (GPL-3.0) is an optional separate integration-test server installed
 in a test environment, not shipped in the extension. It does not change the
 license of CalScout's independently written source.
+
+`@xmldom/xmldom` 0.9.12 (MIT) is used only by Node tests and is not bundled in the
+XPI. Its package license remains in the development dependency. Stalwart 1.0.3
+(AGPL-3.0-only OR LicenseRef-SEL) is a separate optional fixture server, not bundled
+or linked into CalScout. No Stalwart code is copied into the extension.

@@ -76,6 +76,17 @@ class Marionette:
             raise RuntimeError(response)
         return response.get('value')
 
+    def ui(self, script, args=()):
+        return self.execute("""
+const {ExtensionParent}=ChromeUtils.importESModule('resource://gre/modules/ExtensionParent.sys.mjs');
+const extension=ExtensionParent.GlobalManager.getExtension('calscout@halcycon');
+const view=[...extension.views].find(v=>v.uri?.spec.includes('/ui/manage.html'));
+if (!view) throw new Error('Management page is not open');
+return view.browsingContext.currentWindowGlobal.getActor('MarionetteCommands').executeScript(
+  'const done=arguments[arguments.length-1];(async()=>{'+arguments[0]+'})().then(done,e=>done({error:String(e)}));',
+  arguments[1], {sandboxName:'calscout-test',newSandbox:true,async:true,timeout:30000});
+""", [script, list(args)])
+
 
 API = '''
 const {ExtensionParent}=ChromeUtils.importESModule('resource://gre/modules/ExtensionParent.sys.mjs');
@@ -170,6 +181,42 @@ throw new Error('Native CalDAV provider did not synchronize the fixture event');
 ''', [calendar['id']])
             assert any(item['title'] == 'Native sync proof' for item in result)
             print('PASS: Thunderbird native CalDAV synchronized an authenticated server event')
+            discovered = driver.execute(API + "return api.scan({url:arguments[0]+'/alice/personal/',username:'alice',allowLocalhost:true,sourceId:arguments[1]},false);", [base, calendar['id']])
+            assert not discovered.get('error'), discovered
+            assert any(r['name'] == 'Personal' for r in discovered['resources']), discovered
+            assert discovered['complete'], discovered
+            print('PASS: metadata discovery reuses the native authenticated account and lists its home')
+            driver.execute("""
+const {ExtensionParent}=ChromeUtils.importESModule('resource://gre/modules/ExtensionParent.sys.mjs');
+const extension=ExtensionParent.GlobalManager.getExtension('calscout@halcycon');
+Services.wm.getMostRecentWindow('mail:3pane').document.getElementById('tabmail').openTab('contentTab',{url:extension.baseURI.resolve('ui/manage.html?test=1')});
+await new Promise(resolve=>setTimeout(resolve,500)); return true;
+""")
+            response = driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'addAccount',account:{url:arguments[0]+'/alice/personal/',username:'alice',allowLocalhost:true}});", [base])
+            assert response['ok'], response
+            response = driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'scan'});")
+            assert response['ok'], response
+            assert len(response['state']['resources']) == 1, response
+            assert response['state']['resources'][0]['subscriptionId'] == calendar['id']
+            driver.ui("document.querySelector('#refresh').click(); return true;")
+            time.sleep(.2)
+            text = driver.ui("return document.body.innerText;")
+            assert 'Personal' in text and 'Subscribed' in text, text
+            print('PASS: real management UI and background IPC discover and adopt an existing calendar')
+            driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'finishSetup'});")
+            driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'settings',settings:{policy:'auto',interval:15}});")
+            request('/alice/later/', 'MKCALENDAR', b'''<?xml version="1.0"?><c:mkcalendar xmlns:c="urn:ietf:params:xml:ns:caldav" xmlns:d="DAV:"><d:set><d:prop><d:displayname>Added later</d:displayname></d:prop></d:set></c:mkcalendar>''')
+            driver.ui("window.wrappedJSObject.browser.alarms.create('calscout-tick',{delayInMinutes:0.01}); return true;")
+            deadline = time.monotonic() + 20
+            while True:
+                response = driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'state'});")
+                later = [r for r in response['state']['resources'] if r['name'] == 'Added later']
+                if later and later[0]['subscriptionId']:
+                    break
+                if time.monotonic() > deadline:
+                    raise RuntimeError(response)
+                time.sleep(.3)
+            print('PASS: an alarm discovers and automatically subscribes a later calendar without manual discovery')
             driver.execute('''const {AddonManager}=ChromeUtils.importESModule('resource://gre/modules/AddonManager.sys.mjs'); await (await AddonManager.getAddonByID('calscout@halcycon')).disable(); return true;''')
             request('/alice/personal/proof.ics', 'PUT', event.replace(b'Native sync proof', b'Native sync after disable'))
             result = driver.execute(CAL + '''

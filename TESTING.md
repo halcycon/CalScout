@@ -2,7 +2,7 @@
 
 ## Unit and package
 
-`npm test` and `npm run build` (no npm dependencies).
+`npm ci`, `npm test` and `npm run build`. The XML DOM dependency is test-only; the XPI ships no npm libraries.
 
 ## Native integration (isolated local fixtures)
 
@@ -18,9 +18,9 @@ Thunderbird profile. It listens only on loopback, seeds a known test credential
 in Thunderbird's native login manager, and installs CalScout temporarily. Never
 point this test at an everyday profile. No production credentials are required.
 
-2026-11-07 results: 4 URL/security unit tests pass. Real Thunderbird 156.0 +
+2026-11-07 results: 18 protocol, security, lifecycle and orchestration unit tests pass. Real Thunderbird 156.0 +
 Radicale 3.9.0: native registration, URL duplicate prevention, authenticated event
-fetch, extension disable and subsequent native event refresh all PASS.
+fetch, metadata discovery through native authentication, management page/background IPC, alarm-triggered discovery and auto-subscription of a later calendar, extension disable and subsequent native event refresh all PASS.
 
 Native event requests in this test come from Thunderbird's provider; the
 extension has no event synchronization code.
