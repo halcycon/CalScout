@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MPL-2.0
 """Real Stalwart group-sharing acceptance test, both assisted-discovery modes.
 
-Set STALWART_BIN (1.0.3) and THUNDERBIRD_BIN (156). On Linux this script re-execs
+Set STALWART_BIN (1.0.3) and THUNDERBIRD_BIN (153 ESR, 156 or 159). On Linux this script re-execs
 inside an isolated user/network namespace before starting the fixture server.
 Use --record to refresh the sanitized, fixture-only DAV XML recordings.
 """
@@ -19,7 +19,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from stalwart_fixture import NS, Stalwart
-from thunderbird import API, CAL, ROOT, Marionette, free_port
+from thunderbird import API, CAL, ROOT, Marionette, assert_test_version, extension_path, free_port
 
 
 def stop(process):
@@ -102,12 +102,12 @@ user_pref("mailnews.start_page.enabled",false);
                 "--marionette",
                 "--remote-allow-system-access",
             ],
-            env={**os.environ, "MOZ_HEADLESS": "1"},
+            env={**os.environ, "MOZ_HEADLESS": "1", "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS": "1"},
             stdout=log,
             stderr=log,
         )
         driver = Marionette(driver_port, thunderbird)
-        assert driver.capabilities["browserVersion"].startswith("156.")
+        assert_test_version(driver)
         driver.execute(
             """
 const {AddonManager}=ChromeUtils.importESModule('resource://gre/modules/AddonManager.sys.mjs');
@@ -118,7 +118,7 @@ login.init(arguments[1],null,arguments[2],'alice@example.test','fixture-password
 await Services.logins.addLoginAsync(login);
 return true;
 """,
-            [str(ROOT / "dist/calscout-0.1.0.xpi"), server.base, realm],
+            [str(extension_path()), server.base, realm],
         )
         result = driver.execute(
             API
@@ -216,6 +216,26 @@ throw new Error('Native provider failed to synchronize Bob’s calendar through 
             f"PASS assisted={assisted}: later Bob → Team share is automatically subscribed and native Thunderbird sync reads its event",
             flush=True,
         )
+        screenshot_dir = os.environ.get("CALSCOUT_SCREENSHOT_DIR")
+        if screenshot_dir and assisted:
+            destination = Path(screenshot_dir)
+            destination.mkdir(parents=True, exist_ok=True)
+            driver.execute(
+                "Services.wm.getMostRecentWindow('mail:3pane').resizeTo(1280,1100);return true;"
+            )
+            driver.ui(
+                "document.querySelector('#refresh').click();window.scrollTo(0,0);return true;"
+            )
+            time.sleep(0.3)
+            driver.screenshot(destination / "calendars.png", full=True)
+            driver.ui("""
+const form=document.querySelector('#settings');
+form.elements.policy.value='auto'; form.elements.interval.value='15';
+form.requestSubmit();form.closest('section').scrollIntoView();return true;
+""")
+            time.sleep(0.3)
+            driver.screenshot(destination / "preferences.png")
+            print(f"Saved live Thunderbird screenshots to {destination}", flush=True)
         server.share(later, revoke=True)
         for _ in range(2):
             response = driver.ui(
@@ -261,7 +281,7 @@ def main():
         sys.exit(subprocess.call(command))
     subprocess.run(["ip", "link", "set", "lo", "up"], check=True)
     if not os.environ.get("STALWART_BIN") or not os.environ.get("THUNDERBIRD_BIN"):
-        sys.exit("Set STALWART_BIN (1.0.3) and THUNDERBIRD_BIN (156).")
+        sys.exit("Set STALWART_BIN (1.0.3) and THUNDERBIRD_BIN (153 ESR, 156 or 159).")
     with tempfile.TemporaryDirectory(prefix="calscout-stalwart-") as tmp:
         for assisted in (True, False):
             directory = Path(tmp) / str(assisted)

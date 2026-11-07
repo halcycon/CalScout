@@ -1,18 +1,20 @@
-CalScout's first development release for **Thunderbird 156.x**.
+CalScout 0.2.0 prepares the extension for Thunderbird Add-ons review.
 
-- Discover personal, group and shared CalDAV calendars without repeating account setup.
-- Subscribe through Thunderbird's native CalDAV provider.
-- Periodic rediscovery, first-run approval and optional automatic subscription.
-- Persistent ignore/unsubscribe decisions and safe handling of revoked access.
-- Tested against Thunderbird 156, Stalwart 1.0.3 (both assisted-discovery modes)
-  and Radicale 3.9.0, including a later Bob → Team → Alice share.
+- Supports Thunderbird 153.6 ESR through 159.x; complete Linux integration tests
+  passed on 153.6.0 ESR and 159.0 with Radicale 3.9.0 and Stalwart 1.0.3.
+- Both Stalwart assisted-discovery modes pass real group-sharing tests, automatic
+  subscription and native read-only event sync.
+- Adds a bundled privacy policy accessible from the management page.
+- Includes an ATN submission packet with listing text, reviewer instructions,
+  fixture screenshots, icon, exact source snapshot and checksums.
 
-Download the `.xpi` asset and install it through **Add-ons and Themes → gear →
-Install Add-on From File**. `SHA256SUMS` contains the download checksum.
+Download the `.xpi` asset and install through **Add-ons and Themes → gear →
+Install Add-on From File**. Verify it using SHA256SUMS. The submission ZIP is a
+maintainer packet; extract it before uploading its XPI to ATN.
 
-This is a development MVP. The Experiment grants full application access;
+This remains a development MVP. The Experiment grants full application access.
 Windows/macOS and OAuth-provider-specific acceptance need wider testing.
-There is no ATN listing or automatic update service. Review the README and
-security model before trying it in your everyday profile.
+ATN validation, submission and approval are pending. GitHub publication does not
+submit to the store or provide an automatic update service.
 
 Source license: MPL-2.0. Support development: https://ko-fi.com/thecuckoocamp

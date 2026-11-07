@@ -25,7 +25,9 @@ jobs:
           path: dist
       - name: Verify release files
         working-directory: dist
-        run: sha256sum --check SHA256SUMS
+        run: |
+          sha256sum --check SHA256SUMS
+          sha256sum --check ATN_SHA256SUMS
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -42,7 +44,7 @@ jobs:
             gh release create "$RELEASE_TAG" --draft --verify-tag \
               --title "CalScout $VERSION" --notes-file docs/RELEASE_NOTES.md
           fi
-          gh release upload "$RELEASE_TAG" dist/*.xpi dist/SHA256SUMS --clobber
+          gh release upload "$RELEASE_TAG" dist/*.xpi dist/*.zip dist/SHA256SUMS dist/ATN_SHA256SUMS --clobber
           if [[ "$VERSION" == 0.* ]]; then
             gh release edit "$RELEASE_TAG" --draft=false --prerelease
           else

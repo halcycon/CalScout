@@ -55,11 +55,15 @@ jobs:
           cd dist
           sha256sum --check /tmp/calscout-xpi.sha256
           sha256sum --check SHA256SUMS
+      - name: Build ATN submission packet from committed source
+        run: npm run build:submission
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: calscout-xpi
           path: |
             dist/*.xpi
+            dist/*.zip
+            dist/ATN_SHA256SUMS
             dist/SHA256SUMS
           if-no-files-found: error
           retention-days: 30
@@ -70,4 +74,6 @@ jobs:
           path: ${{ runner.temp }}/calscout-installable
       - name: Check downloaded artifact checksum
         working-directory: ${{ runner.temp }}/calscout-installable
-        run: sha256sum --check SHA256SUMS
+        run: |
+          sha256sum --check SHA256SUMS
+          sha256sum --check ATN_SHA256SUMS

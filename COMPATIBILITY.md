@@ -1,31 +1,45 @@
 # Compatibility
 
-Tested: Thunderbird **156.0**, Linux x86_64, build **20260910221217**.
-Downloaded from Mozilla's release archive, archive SHA-256:
-`cfa82799a50f60ac3e870baf11873373a04abb88a75a36dad43b9d5c1efacf01`.
+CalScout 0.2.0 permits Thunderbird **153.6.0 through 159.***. Acceptance testing
+covers Linux x86_64 on **153.6.0 ESR** and **159.0**. The previous 0.1.0 release
+was tested on **156.0** (build 20260910221217). Intermediate versions, Windows,
+macOS and OAuth-provider variations have not each been tested.
 
-Target binary: https://ftp.mozilla.org/pub/thunderbird/releases/156.0/linux-x86_64/en-US/thunderbird-156.0.tar.xz
+Official Mozilla release archives and SHA-256 checksums:
 
-The manifest deliberately limits compatibility to 156.* until later versions are
-tested. MV2 and privileged parent Experiments were loaded successfully. Internal
-calendar modules are not a stable public extension API; any API break must be
-reported and leave existing subscriptions alone.
+| Thunderbird | Archive | SHA-256 |
+| --- | --- | --- |
+| 153.6.0 ESR | [Linux en-US](https://ftp.mozilla.org/pub/thunderbird/releases/153.6.0esr/linux-x86_64/en-US/thunderbird-153.6.0esr.tar.xz) | `b615e9996150d64e2d520981d0088dd5d45f375bc0f153d53a682ffbac2d08f3` |
+| 159.0 | [Linux en-US](https://ftp.mozilla.org/pub/thunderbird/releases/159.0/linux-x86_64/en-US/thunderbird-159.0.tar.xz) | `a7cb57c4dfec66e566e1cbbdcf7e0aab67aad7262dd0ab38b4f4e8df2b771074` |
+| 156.0 (historical) | [Linux en-US](https://ftp.mozilla.org/pub/thunderbird/releases/156.0/linux-x86_64/en-US/thunderbird-156.0.tar.xz) | `cfa82799a50f60ac3e870baf11873373a04abb88a75a36dad43b9d5c1efacf01` |
 
-Dependencies: `calUtils.sys.mjs`, `cal.manager.createCalendar/registerCalendar`,
-`calICalendar` properties, native `caldav` provider. No external runtime libraries.
-Build: Python 3 (stdlib). Unit tests: Node 22+ with test-only @xmldom/xmldom 0.9.12. Integration: Python test venv with
-Radicale 3.9.0, Thunderbird 156, Marionette chrome access in a disposable profile.
+On 7 November 2026, both current test versions passed the complete Radicale 3.9.0
+native smoke test and Stalwart 1.0.3 acceptance with assisted discovery enabled
+and disabled. Coverage includes normal unsigned installation, authenticated
+rediscovery, group ACLs, later automatic subscription, native read-only event sync,
+revocation preservation, account isolation, manual unsubscribe suppression,
+extension disable and full Thunderbird restart. See TESTING.md for reproduction.
 
-Distribution: normal unsigned XPI installation and restart persistence were verified
-on the target release, without changing signing preferences. The XPI is a development
-build with full application privileges; GitHub releases provide downloads; ATN review has not been performed.
-ATN listing requires its own review, including the Experiment justification. See
-[release procedure](docs/RELEASE.md) and the [Thunderbird review policy](https://thunderbird.github.io/atn-review-policy/).
+MV2 and privileged parent Experiments loaded successfully. The shipped modules
+provide `calUtils.sys.mjs`, `cal.manager.createCalendar/registerCalendar`, native
+DAV authentication and the `caldav` provider. Neither tested release exposes a
+built-in calendar MailExtension schema replacing the bridge. Internal calendar
+interfaces are not stable public APIs. Failures must preserve subscriptions.
 
-Live server compatibility: Radicale 3.9.0 and Stalwart 1.0.3. Stalwart assisted
-discovery enabled/disabled both pass authenticated group-share discovery, later
-share automation, native read-only event sync and non-destructive revocation.
-Cross-origin authenticated redirects are deliberately blocked; configure the
-actual secure CalDAV origin separately if a provider needs one. Mozilla mail
-autoconfiguration documents are not consumed; DNS SRV/TXT, domain well-known,
-existing CalDAV subscriptions and explicit endpoint setup are supported.
+Runtime has no external libraries. Builds use Python 3.10+; tests use Node 22+,
+test-only @xmldom/xmldom 0.9.12 and disposable server fixtures. The Thunderbird 159
+Marionette harness requires MOZ_REMOTE_ALLOW_SYSTEM_ACCESS=1 for privileged test
+commands; the harness sets it only for its own disposable Thunderbird processes.
+This is not an extension installation requirement or a signing bypass.
+
+Normal unsigned installation and restart persistence passed without changing
+signing preferences. GitHub releases provide development builds with full
+application privileges. **ATN validation, submission and review are pending**;
+preparing a packet or publishing on GitHub does not imply store approval. See
+[submission instructions](docs/atn/SUBMIT.md) and the
+[Thunderbird review policy](https://thunderbird.github.io/atn-review-policy/).
+
+Cross-origin authenticated redirects are blocked; configure the actual secure
+CalDAV origin separately if needed. Mozilla mail autoconfiguration documents are
+not consumed; DNS SRV/TXT, domain well-known, existing CalDAV subscriptions and
+explicit endpoint setup are supported.

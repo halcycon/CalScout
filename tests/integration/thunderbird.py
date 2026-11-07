@@ -26,6 +26,17 @@ def free_port():
         return sock.getsockname()[1]
 
 
+def extension_path():
+    version = json.loads((ROOT / "src/manifest.json").read_text())["version"]
+    return ROOT / "dist" / f"calscout-{version}.xpi"
+
+
+def assert_test_version(driver):
+    version = driver.capabilities["browserVersion"]
+    major = int(version.split(".")[0])
+    assert major in {153, 156, 159}, f"Unconfigured acceptance target: Thunderbird {version}"
+
+
 class Marionette:
     def __init__(self, port, process):
         deadline = time.monotonic() + 30
@@ -101,6 +112,18 @@ return view.browsingContext.currentWindowGlobal.getActor('MarionetteCommands').e
             [script, list(args)],
         )
 
+    def screenshot(self, path, full=False):
+        data = self.execute(
+            """
+const {ExtensionParent}=ChromeUtils.importESModule('resource://gre/modules/ExtensionParent.sys.mjs');
+const extension=ExtensionParent.GlobalManager.getExtension('calscout@halcycon');
+const view=[...extension.views].find(v=>v.uri?.spec.includes('/ui/manage.html'));
+return view.browsingContext.currentWindowGlobal.getActor('MarionetteCommands').takeScreenshot(null,0,arguments[0],false);
+""",
+            [full],
+        )
+        Path(path).write_bytes(base64.b64decode(data))
+
 
 API = """
 const {ExtensionParent}=ChromeUtils.importESModule('resource://gre/modules/ExtensionParent.sys.mjs');
@@ -113,7 +136,7 @@ CAL = "const {cal}=ChromeUtils.importESModule('resource:///modules/calendar/calU
 def main():
     binary = os.environ.get("THUNDERBIRD_BIN") or shutil.which("thunderbird")
     if not binary:
-        sys.exit("Set THUNDERBIRD_BIN to a Thunderbird 156 executable.")
+        sys.exit("Set THUNDERBIRD_BIN to a Thunderbird 153 ESR, 156 or 159 executable.")
     with tempfile.TemporaryDirectory(prefix="calscout-test-") as directory:
         tmp = Path(directory)
         profile = tmp / "profile"
@@ -190,15 +213,13 @@ user_pref("mailnews.start_page.enabled", false);
                     "--marionette",
                     "--remote-allow-system-access",
                 ],
-                env={**os.environ, "MOZ_HEADLESS": "1"},
+                env={**os.environ, "MOZ_HEADLESS": "1", "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS": "1"},
                 stdout=log,
                 stderr=log,
             )
             driver = Marionette(driver_port, thunderbird)
             print("Thunderbird:", driver.capabilities["browserVersion"])
-            assert driver.capabilities["browserVersion"].startswith("156."), (
-                "Run this acceptance test against the target Thunderbird 156"
-            )
+            assert_test_version(driver)
             driver.execute(
                 """
 const {AddonManager}=ChromeUtils.importESModule('resource://gre/modules/AddonManager.sys.mjs');
@@ -211,7 +232,7 @@ login.init(arguments[1],null,'Radicale - Password Required','alice','fixture-pas
 await Services.logins.addLoginAsync(login);
 return true;
 """,
-                [str(ROOT / "dist/calscout-0.1.0.xpi"), base],
+                [str(extension_path()), base],
             )
             calendar = driver.execute(
                 API
@@ -375,7 +396,7 @@ throw new Error('Native calendar did not continue syncing after extension disabl
                     "--marionette",
                     "--remote-allow-system-access",
                 ],
-                env={**os.environ, "MOZ_HEADLESS": "1"},
+                env={**os.environ, "MOZ_HEADLESS": "1", "MOZ_REMOTE_ALLOW_SYSTEM_ACCESS": "1"},
                 stdout=log,
                 stderr=log,
             )
