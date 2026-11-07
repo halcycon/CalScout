@@ -1,6 +1,6 @@
 {
   "name": "calscout",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "license": "MPL-2.0",
@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{js,mjs,json,html,css}\" \"tests/unit/*.mjs\" \"scripts/*.mjs\" eslint.config.mjs",
     "format:check": "prettier --check \"src/**/*.{js,mjs,json,html,css}\" \"tests/unit/*.mjs\" \"scripts/*.mjs\" eslint.config.mjs",
-    "build:submission": "python3 scripts/submission.py"
+    "build:submission": "python3 scripts/submission.py",
+    "check:atn": "python3 scripts/check_atn.py"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

@@ -1,6 +1,6 @@
 # CalScout
 
-Thunderbird 153.6 ESR–159 MailExtension; see README.md and CalScout-brief.md. Runtime source
+Thunderbird 153 ESR–159 MailExtension; see README.md and CalScout-brief.md. Runtime source
 is dependency-free modern JavaScript. Use the native caldav provider; never add an
 event synchronization engine or direct calendar database/registry-preference writes.
 

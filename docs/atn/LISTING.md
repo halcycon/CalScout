@@ -1,4 +1,4 @@
-# ATN listing fields — CalScout 0.2.0
+# ATN listing fields — CalScout 0.2.1
 
 These are submission materials, not a claim that ATN has approved or listed the
 extension. The extension ID remains `calscout@halcycon`.
@@ -54,7 +54,7 @@ CalScout is free and open source under MPL-2.0. No functionality requires paymen
 - Support: https://github.com/halcycon/CalScout/issues
 - Author website: https://links.thecuckoocamp.co.uk/@cuckooadam
 - Optional support: https://ko-fi.com/thecuckoocamp (use a contribution/profile field if offered)
-- Compatibility: manifest minimum 153.6.0; maximum 159.*; specifically tested releases
+- Compatibility: manifest minimum 153.0; maximum 159.*; specifically tested releases
   are recorded in COMPATIBILITY.md. Do not select additional platforms as tested.
 - Category: select the site's calendar-related category.
 - Privacy policy: paste the complete contents of `src/ui/privacy.txt` into ATN's
