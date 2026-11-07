@@ -135,3 +135,13 @@ subjective health score is claimed from a findings-only review.
 The packaging tests enforce matching manifest/package/tag versions, required
 license/notices, a ZIP-root manifest, deterministic bytes and SHA-256 checksums.
 CI uses the same build path for release assets and development artifacts.
+
+## Initial public build validation
+
+The [first GitHub Actions build](https://github.com/halcycon/CalScout/actions/runs/42394504617)
+passed on 2026-11-07. Its uploaded `calscout-0.1.0.xpi` was downloaded, verified
+against its bundled SHA256SUMS, then used unchanged in the real Thunderbird 156 /
+Radicale harness. Installation, native event sync, UI draft preservation, later
+alarm-driven subscription, account isolation, manual unsubscribe suppression,
+continued native sync after disable, and full restart persistence all passed.
+GitHub's CodeQL setup and dependency graph update also completed successfully.
