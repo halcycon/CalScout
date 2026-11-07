@@ -89,15 +89,21 @@ export function makeTransport(account, source, allowPrompt) {
       originalRedirect.call(this, oldChannel, newChannel, flags, callback);
     };
     active.add(request);
-    const timer = setTimeout(() => request.channel.cancel(Cr.NS_ERROR_NET_TIMEOUT), 30000);
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        (request.response?.nsirequest || request.channel).cancel(Cr.NS_ERROR_NET_TIMEOUT);
+        reject(new DiscoveryError('network', 'DAV metadata request timed out'));
+      }, 30000);
+    });
     try {
-      const response = await request.commit();
+      const response = await Promise.race([request.commit(), timeout]);
       return { status: response.status, url: response.uri.spec, text: response.text };
     } finally {
       clearTimeout(timer);
       active.delete(request);
     }
   };
-  requestMetadata.cancel = () => { for (const r of active) r.channel.cancel(Cr.NS_ERROR_ABORT); };
+  requestMetadata.cancel = () => { for (const r of active) (r.response?.nsirequest || r.channel).cancel(Cr.NS_ERROR_ABORT); };
   return requestMetadata;
 }

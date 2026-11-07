@@ -156,13 +156,14 @@ user_pref("mailnews.start_page.enabled", false);
             driver.execute('''
 const {AddonManager}=ChromeUtils.importESModule('resource://gre/modules/AddonManager.sys.mjs');
 const file=Cc['@mozilla.org/file/local;1'].createInstance(Ci.nsIFile); file.initWithPath(arguments[0]);
-await AddonManager.installTemporaryAddon(file);
+const install=await AddonManager.getInstallForFile(file);
+await install.install();
 // Fixture credentials are seeded by the test, never by CalScout.
 const login=Cc['@mozilla.org/login-manager/loginInfo;1'].createInstance(Ci.nsILoginInfo);
 login.init(arguments[1],null,'Radicale - Password Required','alice','fixture-password','','');
 await Services.logins.addLoginAsync(login);
 return true;
-''', [str(ROOT / 'src'), base])
+''', [str(ROOT / 'dist/calscout-0.1.0.xpi'), base])
             calendar = driver.execute(API + '''return api.register({url:arguments[0]+'/alice/personal/',name:'Personal',username:'alice',allowLocalhost:true});''', [base])
             print('Native subscription:', calendar['type'], calendar['username'])
             assert calendar['type'] == 'caldav' and calendar['managed']
@@ -217,6 +218,15 @@ await new Promise(resolve=>setTimeout(resolve,500)); return true;
                     raise RuntimeError(response)
                 time.sleep(.3)
             print('PASS: an alarm discovers and automatically subscribes a later calendar without manual discovery')
+            unauthenticated = driver.execute(API + "return api.scan({url:arguments[0]+'/alice/personal/',username:'bob',allowLocalhost:true},false);", [base])
+            assert unauthenticated.get('error') == 'auth', unauthenticated
+            print('PASS: another account cannot borrow Alice’s authentication and unattended scans do not prompt')
+            driver.execute(CAL + "cal.manager.unregisterCalendar(cal.manager.getCalendarById(arguments[0])); return true;", [later[0]['subscriptionId']])
+            response = driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'scan'});")
+            ignored = [r for r in response['state']['resources'] if r['name'] == 'Added later'][0]
+            assert ignored['suppressed'] and not ignored['subscriptionId'], response
+            print('PASS: native manual unsubscribe remains suppressed under automatic subscription')
+
             driver.execute('''const {AddonManager}=ChromeUtils.importESModule('resource://gre/modules/AddonManager.sys.mjs'); await (await AddonManager.getAddonByID('calscout@halcycon')).disable(); return true;''')
             request('/alice/personal/proof.ics', 'PUT', event.replace(b'Native sync proof', b'Native sync after disable'))
             result = driver.execute(CAL + '''
@@ -231,6 +241,31 @@ throw new Error('Native calendar did not continue syncing after extension disabl
 ''', [calendar['id']])
             assert result
             print('PASS: native subscription continues synchronizing with CalScout disabled')
+            driver.call('WebDriver:DeleteSession', {})
+            driver.sock.close()
+            thunderbird.terminate()
+            thunderbird.wait(timeout=15)
+            thunderbird = subprocess.Popen([binary, '--headless', '--no-remote', '--profile', str(profile),
+                '--marionette', '--remote-allow-system-access'], env={**os.environ, 'MOZ_HEADLESS': '1'}, stdout=log, stderr=log)
+            driver = Marionette(driver_port, thunderbird)
+            persisted = driver.execute(CAL + "return cal.manager.getCalendarById(arguments[0])?.type;", [calendar['id']])
+            assert persisted == 'caldav', persisted
+            driver.execute("""
+const {AddonManager}=ChromeUtils.importESModule('resource://gre/modules/AddonManager.sys.mjs');
+const addon=await AddonManager.getAddonByID('calscout@halcycon');
+if (!addon || !addon.userDisabled) throw new Error('Expected the installed extension to remain disabled across restart');
+await addon.enable();
+const {ExtensionParent}=ChromeUtils.importESModule('resource://gre/modules/ExtensionParent.sys.mjs');
+const extension=ExtensionParent.GlobalManager.getExtension('calscout@halcycon');
+Services.wm.getMostRecentWindow('mail:3pane').document.getElementById('tabmail').openTab('contentTab',{url:extension.baseURI.resolve('ui/manage.html?restart=1')});
+await new Promise(resolve=>setTimeout(resolve,500)); return true;
+""")
+            response=driver.ui("return window.wrappedJSObject.browser.runtime.sendMessage({action:'state'});")
+            assert response['ok'],response
+            assert response['state']['firstRunComplete'] and response['state']['settings']['policy']=='auto',response
+            ignored=next(r for r in response['state']['resources'] if r['name']=='Added later')
+            assert ignored['suppressed'] and not ignored['subscriptionId'],response
+            print('PASS: normal unsigned XPI installation, native subscriptions, settings and suppression survive a full Thunderbird restart')
             driver.call('WebDriver:DeleteSession', {})
             driver.sock.close()
         except Exception:

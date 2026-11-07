@@ -25,7 +25,7 @@ browser.calendarBridge.onChanged.addListener(() => {
   ready.then(() => service.serialize(async () => { await service.refreshNative(); await service.save(); })).catch(() => {});
 });
 for (const event of [browser.accounts.onCreated, browser.accounts.onUpdated, browser.accounts.onDeleted]) {
-  event?.addListener(() => ready.then(() => service.scan()).catch(() => {}));
+  event?.addListener(() => ready.then(() => service.scan({ force: true })).catch(() => {}));
 }
 // The first alarm gives calendar/account services time to initialize. Native
 // registry changes are observed; configured mail-account changes can be imported

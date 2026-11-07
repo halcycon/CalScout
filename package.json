@@ -7,7 +7,9 @@
   "scripts": {
     "test": "node --test tests/unit/*.test.mjs",
     "build": "python3 scripts/package.py",
-    "test:thunderbird": "python3 tests/integration/thunderbird.py"
+    "test:thunderbird": "python3 tests/integration/thunderbird.py",
+    "check": "node scripts/check.mjs",
+    "test:stalwart": "python3 tests/integration/stalwart.py"
   },
   "devDependencies": {
     "@xmldom/xmldom": "0.9.12"

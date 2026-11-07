@@ -60,3 +60,24 @@ test('auth and home errors fail the scan instead of implying removal', async () 
   await assert.rejects(discover({url:'https://dav.example/'}, async()=>({status:401}),parseXML), {kind:'auth'});
   await assert.rejects(discover({url:'https://dav.example/'}, async()=>({status:503}),parseXML), {kind:'http'});
 });
+
+test('recorded Stalwart 1.0.3 responses expose effective group ACLs and all calendars in both modes', async () => {
+  const { readFile } = await import('node:fs/promises');
+  for (const mode of ['assisted','multiple-homes']) {
+    const principal = await readFile(new URL(`../fixtures/stalwart-1.0.3-${mode}-principal.xml`, import.meta.url), 'utf8');
+    const homes = JSON.parse(await readFile(new URL(`../fixtures/stalwart-1.0.3-${mode}-homes.json`, import.meta.url), 'utf8'));
+    const share = parseMultiStatus(await readFile(new URL(`../fixtures/stalwart-1.0.3-${mode}-group-share.xml`, import.meta.url), 'utf8'), parseXML)[0];
+    assert.equal(share.calendar, true);
+    assert.equal(share.readOnly, true);
+    assert.equal(share.principal, '/dav/pal/alice%40example.test/');
+    const result = await discover({url:'https://fixture.example/dav/pal/alice%40example.test/'}, async (url, depth) => {
+      const path = new URL(url).pathname;
+      const text = depth === 0 ? principal : homes.find(([home]) => home === path)?.[1];
+      assert.ok(text, `Unexpected recorded request ${depth} ${path}`);
+      return {status:207,url,text};
+    }, parseXML);
+    for (const expected of ['Alice','Team','BobShared','BobDirect']) assert.ok(result.resources.some(r => r.name === expected),`${mode}: ${expected}`);
+    assert.equal(result.complete,true);
+    if (mode === 'multiple-homes') assert.ok(homes.length >= 3);
+  }
+});

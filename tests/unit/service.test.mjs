@@ -112,3 +112,29 @@ test('overlapping discovery requests share a single scan',async()=>{
   await Promise.all([s.service.scan({manual:true}),s.service.scan({manual:true})]);
   assert.equal(s.calls.length,1);
 });
+test('registration failures remain available for retry and do not create suppression',async()=>{
+  const s=await setup();
+  const register=s.browser.calendarBridge.register;
+  s.browser.calendarBridge.register=async()=>{throw new Error('native API changed');};
+  await s.service.action({action:'settings',settings:{policy:'auto'}});
+  await s.service.action({action:'finishSetup'});
+  await s.service.scan({manual:true});
+  let record=s.getStored().resources[0];
+  assert.equal(record.registrationError,true);
+  assert.equal(record.suppressed,false);
+  assert.equal(record.subscriptionId,null);
+  s.browser.calendarBridge.register=register;
+  await s.service.action({action:'subscribe',resourceId:record.id});
+  assert.equal(s.natives.length,1);
+});
+test('incomplete discovery does not count missing resources or disable subscriptions',async()=>{
+  const s=await setup();
+  await s.service.action({action:'settings',settings:{policy:'auto',disableMissing:true}});
+  await s.service.action({action:'finishSetup'});
+  await s.service.scan({manual:true});
+  s.browser.calendarBridge.scan=async()=>({resources:[],complete:false,warnings:['Partial home set']});
+  s.browser.calendarBridge.setEnabled=async()=>{throw new Error('Must not disable');};
+  for(let i=0;i<4;i++)await s.service.scan({manual:true});
+  assert.equal(s.getStored().resources[0].missingScans,0);
+  assert.equal(s.getStored().resources[0].availability,'available');
+});

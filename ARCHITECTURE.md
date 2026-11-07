@@ -117,3 +117,15 @@ to auto, until explicitly completed. Options provide resource actions, account
 inclusion, interval/policy preferences, suppression restoration and diagnostics.
 All server-supplied labels use textContent. The UI has no remote scripts, fonts or
 assets. Native subscription sync is independent of every background/UI module.
+
+## Validation milestone
+
+Thunderbird 156.0 + Stalwart 1.0.3 passes both assisted-discovery modes with actual
+Alice-authenticated PROPFIND responses confirming Bob → Team → Alice read access.
+The live test also removes/re-adds Alice's membership after setup, adds a later
+share, fires the real extension alarm, observes automatic native subscriptions,
+reads Bob's event through Thunderbird's read-only CalDAV provider, and revokes
+access without removing the native subscription. Recordings are in tests/fixtures.
+Radicale independently verifies normal unsigned XPI installation, full application
+restart persistence and continued native synchronization with CalScout disabled.
+See TESTING.md for remaining platform, TLS and OAuth-provider acceptance limits.

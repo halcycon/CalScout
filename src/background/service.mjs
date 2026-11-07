@@ -9,6 +9,9 @@ export class DiscoveryService {
     this.state = state || freshState();
     this.state.settings = validateSettings(this.state.settings);
     await this.refreshNative();
+    for (const account of this.state.accounts) {
+      if (!account.failures && !account.authBlocked) account.nextAttempt = 0;
+    }
     await this.save();
     await this.configureAlarm();
   }
@@ -26,6 +29,10 @@ export class DiscoveryService {
   }
   async refreshNative() {
     const natives = await this.browser.calendarBridge.list();
+    for (const account of this.state.accounts) {
+      if (account.sourceId && !natives.some(c => c.id === account.sourceId && c.type === 'caldav' &&
+          c.username === account.username && new URL(c.url).origin === new URL(account.url).origin)) delete account.sourceId;
+    }
     for (const c of natives.filter(c => c.type === 'caldav' && c.username)) {
       let account;
       try { account = validateAccount({ name: c.username, username: c.username, url: c.url, sourceId: c.id }); }
@@ -38,7 +45,7 @@ export class DiscoveryService {
     reconcileSubscriptions(this.state, natives);
     return natives;
   }
-  scan({ manual = false, accountId = null, allowPrompt = false } = {}) {
+  scan({ manual = false, accountId = null, allowPrompt = false, force = false } = {}) {
     if (this.running) return this.running;
     const operation = this.serialize(async () => {
       await this.refreshNative();
@@ -46,7 +53,7 @@ export class DiscoveryService {
       let newCount = 0;
       for (const account of this.state.accounts) {
         if (!account.enabled || (accountId && account.id !== accountId)) continue;
-        if (!manual && (!this.state.settings.enabled || !this.state.settings.interval || account.authBlocked || (account.nextAttempt || 0) > now)) continue;
+        if (!manual && (!this.state.settings.enabled || !this.state.settings.interval || account.authBlocked || (!force && (account.nextAttempt || 0) > now))) continue;
         const details = { url: account.discoveryUrl || account.url, username: account.username, allowLocalhost: account.allowLocalhost,
           ...(account.sourceId ? { sourceId: account.sourceId } : {}) };
         account.lastAttempt = now;

@@ -13,11 +13,19 @@ reported and leave existing subscriptions alone.
 
 Dependencies: `calUtils.sys.mjs`, `cal.manager.createCalendar/registerCalendar`,
 `calICalendar` properties, native `caldav` provider. No external runtime libraries.
-Build: Python 3 (stdlib). Unit tests: Node 22+. Integration: Python test venv with
+Build: Python 3 (stdlib). Unit tests: Node 22+ with test-only @xmldom/xmldom 0.9.12. Integration: Python test venv with
 Radicale 3.9.0, Thunderbird 156, Marionette chrome access in a disposable profile.
 
-Distribution: this XPI is an unsigned development build. Experiments carry full
-application privileges and require Thunderbird add-on review for distribution.
-Do not infer Firefox signing requirements apply to Thunderbird. Test normal
-installation and review the current [Thunderbird add-on distribution guidance](https://developer.thunderbird.net/add-ons/mailextensions/distribution)
-before publishing; no review or signing submission has been performed.
+Distribution: normal unsigned XPI installation and restart persistence were verified
+on the target release, without changing signing preferences. The XPI is a development
+build with full application privileges; no public review or publication was performed.
+ATN listing requires its own review, including the Experiment justification. See
+[release procedure](docs/RELEASE.md) and the [Thunderbird review policy](https://thunderbird.github.io/atn-review-policy/).
+
+Live server compatibility: Radicale 3.9.0 and Stalwart 1.0.3. Stalwart assisted
+discovery enabled/disabled both pass authenticated group-share discovery, later
+share automation, native read-only event sync and non-destructive revocation.
+Cross-origin authenticated redirects are deliberately blocked; configure the
+actual secure CalDAV origin separately if a provider needs one. Mozilla mail
+autoconfiguration documents are not consumed; DNS SRV/TXT, domain well-known,
+existing CalDAV subscriptions and explicit endpoint setup are supported.
