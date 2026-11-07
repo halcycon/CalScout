@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "CalScout",
+  "version": "0.1.0",
+  "description": "Native CalDAV subscription feasibility prototype. Not a production release.",
+  "browser_specific_settings": {"gecko": {"id": "calscout@halcycon", "strict_min_version": "156.0", "strict_max_version": "156.*"}},
+  "permissions": [],
+  "browser_action": {"default_title": "CalDAV Discovery", "default_popup": "ui/prototype.html"},
+  "experiment_apis": {
+    "calendarBridge": {
+      "schema": "experiments/calendarBridge/schema.json",
+      "parent": {"scopes": ["addon_parent"], "paths": [["calendarBridge"]], "script": "experiments/calendarBridge/api.js"}
+    }
+  }
+}

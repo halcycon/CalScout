@@ -1,0 +1,99 @@
+[
+  {
+    "namespace": "calendarBridge",
+    "types": [
+      {
+        "id": "Calendar",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "managed": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean"
+          }
+        }
+      }
+    ],
+    "functions": [
+      {
+        "name": "list",
+        "type": "function",
+        "async": true,
+        "parameters": [],
+        "returns": {
+          "type": "array",
+          "items": {
+            "$ref": "Calendar"
+          }
+        }
+      },
+      {
+        "name": "register",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "details",
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "sourceId": {
+                "type": "string",
+                "optional": true
+              },
+              "allowLocalhost": {
+                "type": "boolean",
+                "optional": true
+              }
+            }
+          }
+        ],
+        "returns": {
+          "$ref": "Calendar"
+        }
+      },
+      {
+        "name": "setEnabled",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "enabled",
+            "type": "boolean"
+          }
+        ]
+      }
+    ]
+  }
+]

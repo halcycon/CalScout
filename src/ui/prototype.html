@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>CalScout · Native subscription prototype</title>
+<body>
+<h1>CalScout</h1>
+<p>Phase 0 technical prototype. Calendar synchronisation and password prompts are handled by Thunderbird.</p>
+<p>This prototype uses a privileged Experiment with full Thunderbird access. Use a disposable test profile.</p>
+<button id="refresh">List native calendars</button>
+<ul id="calendars"></ul>
+<form id="register">
+<h2>Add a test CalDAV subscription</h2>
+<p>This step requires a known calendar collection URL. Automatic discovery is a later phase.</p>
+<p><label>Name <input name="name" required maxlength="200"></label></p>
+<p><label>Calendar URL <input name="url" type="url" required placeholder="https://calendar.example.com/calendars/alice/personal/"></label></p>
+<p><label>Authentication username <input name="username" required autocomplete="username"></label></p>
+<p><label><input type="checkbox" name="allowLocalhost"> Allow HTTP on localhost for development</label></p>
+<button>Add native calendar</button>
+</form>
+<p id="status" role="status" aria-live="polite"></p>
+<script src="prototype.js"></script>
+</body></html>
