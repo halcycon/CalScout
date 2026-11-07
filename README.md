@@ -8,7 +8,7 @@ Automatically discover newly shared CalDAV calendars in Thunderbird, including
 calendars shared through a group. CalScout manages discovery and subscriptions;
 Thunderbird's native CalDAV provider handles all events and synchronisation.
 
-**Development MVP for Thunderbird 156.x.** Tested with Stalwart 1.0.3 and Radicale
+**Development MVP for Thunderbird 153.6 ESR through 159.x.** Tested with Stalwart 1.0.3 and Radicale
 3.9.0. Wider platform and OAuth-provider testing remains. The extension uses a
 privileged Experiment and requests full Thunderbird access.
 
@@ -17,7 +17,7 @@ privileged Experiment and requests full Thunderbird access.
 1. Open [Releases](https://github.com/halcycon/CalScout/releases) and download the
    `calscout-<version>.xpi` asset. Versions below 1.0 are marked as prereleases.
 2. In Thunderbird, open **Add-ons and Themes → gear menu → Install Add-on From File**
-   and select the XPI. Normal unsigned installation was verified on Thunderbird 156.
+   and select the XPI. Normal unsigned installation was verified on Thunderbird 153.6 ESR and 159.
 3. Open **CalDAV Discovery → Manage calendars**, discover your accounts, choose
    calendars and finish the initial review. Automatic subscription is optional.
 
@@ -34,7 +34,7 @@ preferences. Downloads include `SHA256SUMS` for checksum verification.
 - Preserves subscriptions and local data when access disappears.
 
 Passwords stay in Thunderbird's native authentication system. There is no
-telemetry. Existing subscriptions remain usable when CalScout is disabled.
+telemetry. Read the [privacy policy](src/ui/privacy.txt). Existing subscriptions remain usable when CalScout is disabled.
 
 ## Build and contribute
 
@@ -52,7 +52,10 @@ library dependencies. For temporary development installation, load
 
 Every branch push, pull request and manual **Check and package** run produces a
 `calscout-xpi` Actions artifact containing the XPI and checksum. A version tag such
-as `v0.1.0` runs the same checks and publishes those files to a GitHub release.
+as `v0.2.0` runs the same checks and publishes those files to a GitHub release.
+Tagged releases also include an [ATN submission packet](docs/atn/SUBMIT.md) with
+listing text, privacy policy, reviewer notes, screenshots and exact source snapshot.
+ATN submission and review are pending.
 See [release maintenance](docs/RELEASE.md) for version checks and publishing.
 
 [Contributing](CONTRIBUTING.md) · [Architecture](ARCHITECTURE.md) ·

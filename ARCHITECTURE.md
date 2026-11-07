@@ -2,7 +2,7 @@
 
 ## Feasibility assessment (2026-11-07)
 
-**Feasible, demonstrated on Thunderbird 156.0.** A MailExtension Experiment can
+**Feasible, demonstrated on Thunderbird 153.6 ESR, 156.0 and 159.0.** A MailExtension Experiment can
 create and register a native `caldav` calendar through `cal.manager`. Thunderbird
 then performs authenticated event synchronization and continues doing so after
 the extension is disabled. The reproducible Radicale smoke test passes.
@@ -120,7 +120,7 @@ assets. Native subscription sync is independent of every background/UI module.
 
 ## Validation milestone
 
-Thunderbird 156.0 + Stalwart 1.0.3 passes both assisted-discovery modes with actual
+Thunderbird 153.6 ESR, 156.0 and 159.0 + Stalwart 1.0.3 pass both assisted-discovery modes with actual
 Alice-authenticated PROPFIND responses confirming Bob → Team → Alice read access.
 The live test also removes/re-adds Alice's membership after setup, adds a later
 share, fires the real extension alarm, observes automatic native subscriptions,

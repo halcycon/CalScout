@@ -38,7 +38,7 @@ No signing preference bypass is used. Never use an everyday Thunderbird profile.
 ## Real Thunderbird + Stalwart
 
 Download the pinned [Stalwart 1.0.3 binary](https://github.com/stalwartlabs/stalwart/releases/tag/v1.0.3)
-and [Thunderbird 156.0 binary](https://ftp.mozilla.org/pub/thunderbird/releases/156.0/).
+and [Thunderbird 159.0 binary](https://ftp.mozilla.org/pub/thunderbird/releases/159.0/).
 On Linux, with `unshare` and `ip` installed:
 
 ```sh
@@ -145,3 +145,23 @@ Radicale harness. Installation, native event sync, UI draft preservation, later
 alarm-driven subscription, account isolation, manual unsubscribe suppression,
 continued native sync after disable, and full restart persistence all passed.
 GitHub's CodeQL setup and dependency graph update also completed successfully.
+
+## ATN candidate 0.2.0 acceptance (7 November 2026)
+
+The complete Radicale smoke and Stalwart tests passed separately on Thunderbird
+153.6.0 ESR and 159.0, Linux x86_64. Stalwart passed both assisted-discovery modes
+on each release, including effective Bob → Team → Alice sharing, joining Team
+later, automatic subscription, read-only native event sync and retained native
+subscriptions after revocation. Radicale covered normal unsigned installation,
+UI/background IPC, unsaved drafts, account isolation, manual unsubscribe
+suppression, disable with continued native sync and full restart persistence.
+
+The harness checks the running version and derives the XPI filename from the
+manifest. It sets MOZ_REMOTE_ALLOW_SYSTEM_ACCESS=1 for its disposable processes
+because Thunderbird 159 requires this authorization for Marionette chrome commands.
+This changes the test process only; no test hook ships in the extension.
+
+Archive hashes and tested-version limits are in COMPATIBILITY.md. Store screenshots
+come from the live Stalwart fixture; regeneration instructions are in
+[the screenshot provenance](docs/atn/screenshots/README.md). The ATN hosted validator
+and actual store review remain separate, pending authenticated submission.

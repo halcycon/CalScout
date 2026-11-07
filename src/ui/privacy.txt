@@ -1,0 +1,68 @@
+CalScout privacy policy
+Last updated: 7 November 2026
+
+This policy applies to CalScout, the CalDAV discovery extension maintained by
+Adam Camp (CuckooAdam).
+
+What CalScout accesses
+
+CalScout reads native calendar subscription settings and the CalDAV server
+metadata needed to discover calendars you can access. This includes calendar
+names, collection URLs, owner identifiers, resource identifiers and advertised
+permissions. When you choose to find configured mail accounts, it reads mail
+identity addresses to suggest calendar servers. It does not read mail messages.
+
+CalScout does not fetch or edit calendar events itself. When you subscribe,
+Thunderbird's native CalDAV provider handles event data, editing, reminders,
+authentication and offline synchronization under Thunderbird's own settings.
+
+What stays on your device
+
+CalScout stores account usernames and server URLs, discovered calendar metadata,
+subscription IDs, ignore/unsubscribe decisions, preferences, scan timestamps,
+error categories and a bounded local diagnostic log in Thunderbird's extension
+storage. These records support rediscovery and prevent unwanted subscriptions.
+
+Passwords and authentication tokens are not saved in CalScout's extension storage
+or diagnostic log. Native Thunderbird authentication components handle credential
+lookup, password prompts and OAuth. The privileged discovery bridge checks for a
+matching DAV login and uses authentication in memory for requests to that server.
+It does not copy an IMAP password or send credentials to the developer.
+
+Network connections
+
+CalScout sends calendar-discovery requests to calendar server origins configured
+or selected by you, including origins imported from existing native CalDAV
+subscriptions. Server lookup can query your system DNS resolver for CalDAV service
+records for your email domain. Native OAuth authentication may contact your
+provider's authorization service. Those providers receive the information needed
+to authenticate you and answer requests, including your network address.
+
+Remote calendar connections require HTTPS. An explicit development option permits
+HTTP only on loopback addresses for a local test server. Authenticated discovery
+redirects and advertised resources are restricted to the configured origin.
+
+CalScout sends no analytics, advertising identifiers, usage reports or diagnostic
+logs to its developer or a telemetry service. It adds no tracking cookies. Websites
+you open from links, calendar providers and Thunderbird's own update/telemetry
+features have their own privacy practices.
+
+Your choices and retention
+
+You can pause accounts or automatic discovery, choose approval instead of automatic
+subscription, ignore or restore calendars, and clear the diagnostic log. Other
+configuration and discovery records remain locally until CalScout's extension
+storage is removed, for example through normal uninstallation.
+
+Disabling or uninstalling CalScout intentionally preserves native Thunderbird
+calendar subscriptions and their cached data. Remove subscriptions through
+Thunderbird's normal calendar controls if you no longer want them. Calendar
+providers determine retention of data held on their servers.
+
+Contact
+
+Maintainer: Adam Camp / CuckooAdam
+Contact links: https://links.thecuckoocamp.co.uk/@cuckooadam
+Source and support: https://github.com/halcycon/CalScout
+Please do not post passwords, access tokens or private calendar data in public
+issue reports. Security reports can use the repository's private advisory channel.
