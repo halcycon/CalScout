@@ -30,8 +30,8 @@ source/assets, the MPL license and third-party notices.
 4. Create and push the matching version tag, for example:
 
    ```sh
-   git tag -a v0.2.0 -m 'CalScout 0.2.0'
-   git push origin v0.2.0
+   git tag -a v0.2.1 -m 'CalScout 0.2.1'
+   git push origin v0.2.1
    ```
 
 The **Publish extension** workflow calls the same check/build workflow. Packaging
@@ -63,7 +63,8 @@ need broader acceptance testing before a general release.
 
 ## ATN submission materials
 
-`npm run build:submission` requires a clean committed tree and produces
+`npm run build:submission` first checks both compatibility bounds against ATN’s
+live application-version registry. It requires network access and a clean committed tree and produces
 `dist/calscout-<version>-atn-submission.zip` plus a source ZIP from that exact Git
 revision. The packet includes the XPI, full privacy text, listing fields, reviewer
 notes, screenshot assets, icon, source snapshot and checksums. The check workflow

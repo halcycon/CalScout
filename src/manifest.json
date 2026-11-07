@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
   "name": "CalScout",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Discover newly shared CalDAV calendars and subscribe using Thunderbird\u2019s native provider.",
   "browser_specific_settings": {
     "gecko": {
       "id": "calscout@halcycon",
-      "strict_min_version": "153.6.0",
+      "strict_min_version": "153.0",
       "strict_max_version": "159.*"
     }
   },

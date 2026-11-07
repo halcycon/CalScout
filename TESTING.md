@@ -9,7 +9,7 @@ npm test
 npm run build
 ```
 
-Node 22+ runs **25 JavaScript tests** plus **4 Python packaging tests** covering protocol parsing, real Stalwart recordings,
+Node 22+ runs **25 JavaScript tests** plus **8 Python validation/packaging tests** covering protocol parsing, real Stalwart recordings,
 URL security, state reconciliation, scheduling policy and redacted UI errors.
 Regression tests cover distinct account sign-ins during a scan, stale partial
 results and explicit registration failure reporting. @xmldom/xmldom 0.9.12
@@ -165,3 +165,15 @@ Archive hashes and tested-version limits are in COMPATIBILITY.md. Store screensh
 come from the live Stalwart fixture; regeneration instructions are in
 [the screenshot provenance](docs/atn/screenshots/README.md). The ATN hosted validator
 and actual store review remain separate, pending authenticated submission.
+
+## ATN compatibility correction 0.2.1
+
+ATN rejected 0.2.0's minimum `153.6.0` because its application-version registry
+contains `153.0`, not that point release. Version 0.2.1 uses `153.0` through
+`159.*`. The exact 153.0 Mozilla archive was verified against its published
+SHA256SUMS before running the Radicale and both-mode Stalwart acceptance tests.
+The current minimum and maximum pass `npm run check:atn` against the live ATN
+registry. Four added Python regressions distinguish application registries,
+reject unregistered point releases/unknown maxima/wildcard minima, and fail closed
+when the Thunderbird registry cannot be found. Submission builds also run this
+online check. Hosted upload validation still needs to be repeated by the submitter.

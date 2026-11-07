@@ -1,4 +1,4 @@
-# Reviewer notes — CalScout 0.2.0
+# Reviewer notes — CalScout 0.2.1
 
 CalScout is a general-purpose CalDAV discovery/subscription manager. Any user of
 an accessible standards-compliant CalDAV server can use it; a closed organization,
@@ -108,3 +108,16 @@ by this submission package.
 
 The screenshots in this packet are captured from actual Thunderbird 159 with
 fixture-only accounts. They are illustrative UI material, not test credentials.
+
+## Hosted validator findings
+
+The validator reports `accountsRead` and `accounts.list/onCreated/onUpdated/onDeleted`
+as unsupported by Firefox. These are documented Thunderbird APIs, required for
+mail-account identity suggestions and reacting to account changes:
+https://webextension-api.thunderbird.net/en/mv2/accounts.html
+
+The `strict_max_version` notice is intentional: this extension uses an Experiment
+and relies on internal native calendar interfaces. Its tested upper bound is
+159.*. ATN's registered minimum is 153.0; 153.0, 153.6.0 ESR and 159.0 have native
+acceptance evidence. The original 0.2.0 minimum, 153.6.0, was not in ATN's version
+registry and blocked upload. Version 0.2.1 corrects that metadata.

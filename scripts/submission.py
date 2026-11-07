@@ -5,6 +5,7 @@ import hashlib
 import subprocess
 import zipfile
 
+from check_atn import check
 from package import ROOT, build
 
 
@@ -15,6 +16,7 @@ def git(*args):
 def main():
     if git("status", "--porcelain").strip():
         raise SystemExit("Commit all source/material changes before building a submission snapshot")
+    check()
     xpi = build()
     source = xpi.with_name(xpi.stem + "-source.zip")
     source.write_bytes(git("archive", "--format=zip", "HEAD"))

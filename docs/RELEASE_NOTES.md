@@ -1,20 +1,20 @@
-CalScout 0.2.0 prepares the extension for Thunderbird Add-ons review.
+CalScout 0.2.1 fixes the Thunderbird Add-ons upload blocker in 0.2.0.
 
-- Supports Thunderbird 153.6 ESR through 159.x; complete Linux integration tests
-  passed on 153.6.0 ESR and 159.0 with Radicale 3.9.0 and Stalwart 1.0.3.
-- Both Stalwart assisted-discovery modes pass real group-sharing tests, automatic
-  subscription and native read-only event sync.
-- Adds a bundled privacy policy accessible from the management page.
-- Includes an ATN submission packet with listing text, reviewer instructions,
-  fixture screenshots, icon, exact source snapshot and checksums.
+- Changes the minimum Thunderbird version from 153.6.0 to ATN's registered 153.0;
+  retains the tested maximum of 159.* and the existing extension ID.
+- Verifies the 153.0 baseline with the native Radicale and Stalwart harnesses.
+- Checks both compatibility bounds against ATN's live registry when creating a
+  submission packet. Adds regression tests for unregistered compatibility values.
+- Explains Firefox-specific account API warnings in the reviewer notes.
 
-Download the `.xpi` asset and install through **Add-ons and Themes → gear →
-Install Add-on From File**. Verify it using SHA256SUMS. The submission ZIP is a
-maintainer packet; extract it before uploading its XPI to ATN.
+Download `calscout-0.2.1.xpi` and select it again in ATN's upload form. Its privacy
+policy, listing text, icon and screenshots are included in the submission packet.
+Verify the XPI with SHA256SUMS and packet/source ZIPs with ATN_SHA256SUMS.
 
-This remains a development MVP. The Experiment grants full application access.
-Windows/macOS and OAuth-provider-specific acceptance need wider testing.
-ATN validation, submission and approval are pending. GitHub publication does not
-submit to the store or provide an automatic update service.
+This remains a development MVP with a privileged Experiment granting full
+application access. Linux acceptance covers Thunderbird 153.0, 153.6 ESR and 159.0;
+Windows/macOS and OAuth-provider variations need wider testing. ATN hosted
+validation, submission and review remain pending; the live version-registry check
+does not constitute store approval.
 
 Source license: MPL-2.0. Support development: https://ko-fi.com/thecuckoocamp
