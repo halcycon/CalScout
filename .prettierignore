@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.desloppify/
+package-lock.json
+tests/fixtures/
+just/
+nix/
+CalScout-brief.md

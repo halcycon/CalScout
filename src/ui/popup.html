@@ -1,6 +1,34 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>CalDAV Discovery</title><link rel="stylesheet" href="style.css"></head><body class="popup"><main>
-<header><div class="brand"><img src="icon.svg" alt=""><div><h1>CalScout</h1><span class="muted">Calendar discovery</span></div></div></header>
-<div class="stats"><div><strong id="subscribed">0</strong><small>Subscribed</small></div><div><strong id="available">0</strong><small>Available</small></div><div><strong id="attention">0</strong><small>Attention</small></div></div>
-<div id="status" role="status" aria-live="polite"></div><section class="panel"><ul id="accounts"></ul></section>
-<div class="actions"><button id="discover" class="primary">Discover Now</button><button id="manage">Manage calendars</button></div>
-</main><script type="module" src="popup.mjs"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>CalDAV Discovery</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="popup">
+    <main>
+      <header>
+        <div class="brand">
+          <img src="icon.svg" alt="" />
+          <div>
+            <h1>CalScout</h1>
+            <span class="muted">Calendar discovery</span>
+          </div>
+        </div>
+      </header>
+      <div class="stats">
+        <div><strong id="subscribed">0</strong><small>Subscribed</small></div>
+        <div><strong id="available">0</strong><small>Available</small></div>
+        <div><strong id="attention">0</strong><small>Attention</small></div>
+      </div>
+      <div id="status" role="status" aria-live="polite"></div>
+      <section class="panel"><ul id="accounts"></ul></section>
+      <div class="actions">
+        <button id="discover" class="primary">Discover Now</button
+        ><button id="manage">Manage calendars</button>
+      </div>
+    </main>
+    <script type="module" src="popup.mjs"></script>
+  </body>
+</html>

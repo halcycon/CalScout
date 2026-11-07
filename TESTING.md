@@ -9,10 +9,12 @@ npm test
 npm run build
 ```
 
-Node 22+ runs **21 tests** covering protocol parsing, real Stalwart recordings,
-URL security, state reconciliation and scheduling policy. @xmldom/xmldom 0.9.12
+Node 22+ runs **25 tests** covering protocol parsing, real Stalwart recordings,
+URL security, state reconciliation, scheduling policy and redacted UI errors.
+Regression tests cover distinct account sign-ins during a scan, stale partial
+results and explicit registration failure reporting. @xmldom/xmldom 0.9.12
 is a test dependency only. Python 3's standard library produces the XPI. The
-GitHub Actions workflow repeats these checks and verifies build reproducibility.
+GitHub Actions workflow also runs Ruff on the Python fixtures and repeats these checks and verifies build reproducibility.
 
 ## Real Thunderbird + Radicale
 
@@ -27,7 +29,7 @@ THUNDERBIRD_BIN=/absolute/path/to/thunderbird \
 The harness uses disposable server storage, fixture credentials and a Thunderbird
 profile. It performs a **normal unsigned XPI installation**, registers a native
 caldav subscription, fetches a real server event through Thunderbird, opens the
-management UI, tests its background IPC, automatically subscribes a later calendar
+management UI, tests its background IPC and preservation of unsaved preference edits, automatically subscribes a later calendar
 through an alarm, checks isolation from a second username, observes native manual
 unsubscribe suppression, disables the extension, verifies continued native sync,
 and restarts Thunderbird to verify settings/suppression/subscription persistence.
@@ -116,3 +118,16 @@ usability review. Mozilla autoconfiguration metadata is not implemented. Remote
 HTTPS policy and malicious metadata are unit-tested; live fixture connections
 use the explicit localhost HTTP exception. The complete production TLS/auth
 matrix has not been exercised. ATN public review/publication is not performed.
+
+## Code health and repository checks
+
+Install Python helper tools in a virtual environment with
+`python -m pip install -r requirements-dev.txt`. Then run `ruff check scripts tests/integration`
+and `ruff format --check scripts tests/integration`. `just lint` runs the JavaScript
+and Python checks plus actionlint (install actionlint separately). `just build`
+and `just test` delegate to the npm commands through Tailor project hooks.
+
+Desloppify's local state is ignored by Git. Run `desloppify scan --path . --no-badge`
+with npm dependencies installed; its ESLint detector must succeed. The six manual
+review findings and verification are documented in docs/CODE_HEALTH.md. No
+subjective health score is claimed from a findings-only review.

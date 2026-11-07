@@ -13,3 +13,7 @@
 - [ ] Release hardening: Windows/macOS, OAuth providers, native prompt/certificate UI and public ATN review.
 
 Mandatory Stalwart group-sharing tests pass in both assisted modes. See TESTING.md for the exact covered matrix and remaining release-hardening limits.
+
+Repository maintenance: Tailor v0.5.0 config, project-specific community templates,
+Dependabot, Just hooks, ESLint/Prettier/Ruff checks and code-health cleanup are in
+place. See docs/REPOSITORY.md and docs/CODE_HEALTH.md.

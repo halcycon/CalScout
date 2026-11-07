@@ -5,6 +5,10 @@ is dependency-free modern JavaScript. Use the native caldav provider; never add 
 event synchronization engine or direct calendar database/registry-preference writes.
 
 - `npm ci`, `npm run check`, `npm test`, `npm run build`.
+- `npm run format` formats JavaScript/HTML/CSS; ESLint and Prettier are part of check.
+- Python helpers use root ruff.toml; install requirements-dev.txt in a test venv.
+- Tailor manages repository templates and Just loaders; see docs/REPOSITORY.md.
+- Edit just/project hooks, not generated just/tailor.just or nix loaders.
 - Native integration commands and verified results: TESTING.md.
 - Privileged bridge: src/experiments/calendarBridge; generic DAV: src/discovery.
 - Serialized background orchestration: src/background/service.mjs.

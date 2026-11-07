@@ -5,7 +5,7 @@ export async function send(action, fields = {}) {
   if (!result?.ok) throw new Error(result?.error || 'CalScout background service is unavailable.');
   return result.state;
 }
-export const time = value => value ? new Date(value).toLocaleString() : 'Not checked yet';
+export const time = (value) => (value ? new Date(value).toLocaleString() : 'Not checked yet');
 export const node = (tag, text, className) => {
   const element = document.createElement(tag);
   if (text) element.textContent = text;
@@ -27,10 +27,23 @@ export function resourceStatus(r) {
   if (r.suppressed) return 'Ignored';
   return 'Available';
 }
-export const accountError = error => ({ auth: 'Authentication required', network: 'Server unreachable or malformed response', http: 'Discovery error',
-  compatibility: 'Thunderbird API compatibility error', security: 'Unsafe server response blocked', protocol: 'Invalid DAV response', limit: 'Server discovery limit exceeded' }[error] || 'Discovery error');
+export const accountError = (error) =>
+  ({
+    auth: 'Authentication required',
+    network: 'Server unreachable or malformed response',
+    http: 'Discovery error',
+    compatibility: 'Thunderbird API compatibility error',
+    security: 'Unsafe server response blocked',
+    protocol: 'Invalid DAV response',
+    limit: 'Server discovery limit exceeded',
+  })[error] || 'Discovery error';
 export async function busy(button, work) {
   button.disabled = true;
-  try { await work(); } catch (error) { status.textContent = error.message; }
-  finally { button.disabled = false; }
+  try {
+    await work();
+  } catch (error) {
+    status.textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
 }

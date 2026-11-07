@@ -1,18 +1,135 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CalScout · Calendar discovery</title><link rel="stylesheet" href="style.css"></head><body><main>
-<header><div class="brand"><img src="icon.svg" alt=""><div><h1>Calendar discovery</h1><span class="muted">CalScout · Native Thunderbird calendars</span></div></div><button id="discover" class="primary">Discover Now</button></header>
-<div id="status" role="status" aria-live="polite"></div>
-<section class="panel notice" id="onboarding"><h2>Choose the calendars you want</h2><p>Review available calendars and subscribe below. Automatic subscription starts only after you choose that policy and finish setup.</p><button id="finish">Finish initial review</button></section>
-<section class="panel"><h2>Your calendars</h2><p class="muted">Thunderbird handles events, reminders and synchronisation. Missing calendars stay registered, preserving local data.</p><div id="accounts"></div></section>
-<section class="panel"><h2>Connect an account</h2><p>Existing secure CalDAV accounts are included automatically. For a new account, start with your email address. Thunderbird will ask for a calendar password if needed.</p>
-<button id="suggest">Find configured mail accounts</button><div id="suggestions"></div>
-<form id="connect"><div class="grid"><label><span>Email / authentication username</span><input name="username" type="text" required autocomplete="username"></label><label><span>Account label</span><input name="name" type="text" maxlength="200" placeholder="Work"></label></div>
-<button id="lookup" type="button">Find calendar server</button><label><span>Calendar server</span><select id="candidates"><option value="">Find a server or enter an address below</option></select></label>
-<details><summary>Advanced server settings</summary><label><span>Server address (optional)</span><input name="url" type="url" placeholder="https://calendar.example.com/.well-known/caldav"></label><label><input name="allowLocalhost" type="checkbox"> Allow HTTP on localhost for development</label></details>
-<p class="muted">CalScout never reads mail passwords. Calendar credentials are managed by Thunderbird.</p><button class="primary" type="submit">Connect and discover</button></form></section>
-<section class="panel"><h2>Discovery preferences</h2><form id="settings"><label><input name="enabled" type="checkbox"> Discover automatically</label>
-<div class="grid"><label><span>Check interval</span><select name="interval"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">60 minutes</option><option value="120">120 minutes</option><option value="0">Manual only</option></select></label>
-<label><span>New calendars</span><select name="policy"><option value="ask">Ask before subscribing</option><option value="auto">Subscribe automatically</option></select></label></div>
-<label><input name="notifications" type="checkbox"> Notify me about new calendars</label><label><input name="disableMissing" type="checkbox"> Disable managed calendars after three complete scans cannot find them</label><p class="muted">Disabling preserves subscriptions and local data. Re-enable them in Thunderbird after access returns.</p><label><input name="debug" type="checkbox"> Show detailed discovery diagnostics</label><button type="submit">Save preferences</button></form></section>
-<section class="panel"><h2>Diagnostics</h2><p>Structured local log. No passwords, tokens or authentication headers are recorded.</p><div class="actions"><button id="refresh">Refresh status</button><button id="clear">Clear log</button></div><pre id="logs"></pre></section>
-<footer class="muted"><p>CalScout uses a privileged Experiment with full Thunderbird access to manage native subscriptions. No telemetry. Disabling CalScout leaves your calendars usable.</p><a href="prototype.html">Native integration diagnostic</a></footer>
-</main><script type="module" src="manage.mjs"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CalScout · Calendar discovery</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="brand">
+          <img src="icon.svg" alt="" />
+          <div>
+            <h1>Calendar discovery</h1>
+            <span class="muted">CalScout · Native Thunderbird calendars</span>
+          </div>
+        </div>
+        <button id="discover" class="primary">Discover Now</button>
+      </header>
+      <div id="status" role="status" aria-live="polite"></div>
+      <section class="panel notice" id="onboarding">
+        <h2>Choose the calendars you want</h2>
+        <p>
+          Review available calendars and subscribe below. Automatic subscription starts only after
+          you choose that policy and finish setup.
+        </p>
+        <button id="finish">Finish initial review</button>
+      </section>
+      <section class="panel">
+        <h2>Your calendars</h2>
+        <p class="muted">
+          Thunderbird handles events, reminders and synchronisation. Missing calendars stay
+          registered, preserving local data.
+        </p>
+        <div id="accounts"></div>
+      </section>
+      <section class="panel">
+        <h2>Connect an account</h2>
+        <p>
+          Existing secure CalDAV accounts are included automatically. For a new account, start with
+          your email address. Thunderbird will ask for a calendar password if needed.
+        </p>
+        <button id="suggest">Find configured mail accounts</button>
+        <div id="suggestions"></div>
+        <form id="connect">
+          <div class="grid">
+            <label
+              ><span>Email / authentication username</span
+              ><input name="username" type="text" required autocomplete="username" /></label
+            ><label
+              ><span>Account label</span
+              ><input name="name" type="text" maxlength="200" placeholder="Work"
+            /></label>
+          </div>
+          <button id="lookup" type="button">Find calendar server</button
+          ><label
+            ><span>Calendar server</span
+            ><select id="candidates">
+              <option value="">Find a server or enter an address below</option>
+            </select></label
+          >
+          <details>
+            <summary>Advanced server settings</summary>
+            <label
+              ><span>Server address (optional)</span
+              ><input
+                name="url"
+                type="url"
+                placeholder="https://calendar.example.com/.well-known/caldav" /></label
+            ><label
+              ><input name="allowLocalhost" type="checkbox" /> Allow HTTP on localhost for
+              development</label
+            >
+          </details>
+          <p class="muted">
+            CalScout never reads mail passwords. Calendar credentials are managed by Thunderbird.
+          </p>
+          <button class="primary" type="submit">Connect and discover</button>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>Discovery preferences</h2>
+        <form id="settings">
+          <label><input name="enabled" type="checkbox" /> Discover automatically</label>
+          <div class="grid">
+            <label
+              ><span>Check interval</span
+              ><select name="interval">
+                <option value="15">15 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="120">120 minutes</option>
+                <option value="0">Manual only</option>
+              </select></label
+            >
+            <label
+              ><span>New calendars</span
+              ><select name="policy">
+                <option value="ask">Ask before subscribing</option>
+                <option value="auto">Subscribe automatically</option>
+              </select></label
+            >
+          </div>
+          <label><input name="notifications" type="checkbox" /> Notify me about new calendars</label
+          ><label
+            ><input name="disableMissing" type="checkbox" /> Disable managed calendars after three
+            complete scans cannot find them</label
+          >
+          <p class="muted">
+            Disabling preserves subscriptions and local data. Re-enable them in Thunderbird after
+            access returns.
+          </p>
+          <label><input name="debug" type="checkbox" /> Show detailed discovery diagnostics</label
+          ><button type="submit">Save preferences</button>
+        </form>
+      </section>
+      <section class="panel">
+        <h2>Diagnostics</h2>
+        <p>Structured local log. No passwords, tokens or authentication headers are recorded.</p>
+        <div class="actions">
+          <button id="refresh">Refresh status</button><button id="clear">Clear log</button>
+        </div>
+        <pre id="logs"></pre>
+      </section>
+      <footer class="muted">
+        <p>
+          CalScout uses a privileged Experiment with full Thunderbird access to manage native
+          subscriptions. No telemetry. Disabling CalScout leaves your calendars usable.
+        </p>
+      </footer>
+    </main>
+    <script type="module" src="manage.mjs"></script>
+  </body>
+</html>

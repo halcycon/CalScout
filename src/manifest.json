@@ -10,12 +10,7 @@
       "strict_max_version": "156.*"
     }
   },
-  "permissions": [
-    "storage",
-    "alarms",
-    "notifications",
-    "accountsRead"
-  ],
+  "permissions": ["storage", "alarms", "notifications", "accountsRead"],
   "browser_action": {
     "default_title": "CalDAV Discovery",
     "default_popup": "ui/popup.html"
@@ -24,23 +19,15 @@
     "calendarBridge": {
       "schema": "experiments/calendarBridge/schema.json",
       "parent": {
-        "scopes": [
-          "addon_parent"
-        ],
-        "paths": [
-          [
-            "calendarBridge"
-          ]
-        ],
+        "scopes": ["addon_parent"],
+        "paths": [["calendarBridge"]],
         "script": "experiments/calendarBridge/api.js"
       }
     }
   },
   "background": {
     "type": "module",
-    "scripts": [
-      "background/background.mjs"
-    ]
+    "scripts": ["background/background.mjs"]
   },
   "options_ui": {
     "page": "ui/manage.html",

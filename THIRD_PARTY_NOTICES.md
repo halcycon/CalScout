@@ -20,3 +20,15 @@ license of CalScout's independently written source.
 XPI. Its package license remains in the development dependency. Stalwart 1.0.3
 (AGPL-3.0-only OR LicenseRef-SEL) is a separate optional fixture server, not bundled
 or linked into CalScout. No Stalwart code is copied into the extension.
+
+Repository tooling and community templates are generated/adapted from
+[Tailor v0.5.0](https://github.com/wimpysworld/tailor/tree/v0.5.0), copyright its
+contributors, under BlueOak-1.0.0. The license text is retained in
+`docs/licenses/TAILOR-BlueOak-1.0.0.txt`. Tailor is a development tool, not an XPI
+dependency. CODE_OF_CONDUCT.md retains its Contributor Covenant 3.0 attribution
+and CC BY-SA 4.0 notice; that document is not licensed MPL-2.0.
+
+ESLint, globals and Prettier are development-only npm dependencies. Ruff is a
+Python development tool. Their own package notices apply; none ships in the XPI.
+The minimatch override pins a patched development dependency until ESLint's
+upstream dependency range includes the advisory fix.

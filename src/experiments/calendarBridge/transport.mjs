@@ -8,11 +8,15 @@ import { PROPFIND_BODY } from '../../discovery/xml.mjs';
 import { safeTarget, DiscoveryError } from '../../discovery/discover.mjs';
 
 Cu.importGlobalProperties(['DOMParser']);
-export const parseXML = xml => new DOMParser().parseFromString(xml, 'application/xml');
+export const parseXML = (xml) => new DOMParser().parseFromString(xml, 'application/xml');
 
 /** Preserve native credential lookup while permitting at most one user-initiated prompt. */
 class DiscoveryPrompt extends cal.auth.Prompt {
-  constructor(allowPrompt) { super(); this.allowPrompt = allowPrompt; this.prompted = false; }
+  constructor(allowPrompt) {
+    super();
+    this.allowPrompt = allowPrompt;
+    this.prompted = false;
+  }
   _promptAuthInternal(...args) {
     if (!this.allowPrompt || this.prompted) return false;
     this.prompted = true;
@@ -46,17 +50,23 @@ class DiscoverySession extends CalDavSession {
     // over OAuth (e.g. Fastmail app passwords). Never inspect an IMAP login.
     if (!('_oAuth' in this)) {
       const logins = await Services.logins.searchLoginsAsync({ origin: channel.URI.prePath });
-      const hasDAVLogin = logins.some(login => login.username === this.username);
+      const hasDAVLogin = logins.some((login) => login.username === this.username);
       const oauth = new OAuth2Module();
-      this._oAuth = !hasDAVLogin && oauth.initFromHostname(channel.URI.host, this.username, 'caldav') ? oauth : null;
+      this._oAuth =
+        !hasDAVLogin && oauth.initFromHostname(channel.URI.host, this.username, 'caldav')
+          ? oauth
+          : null;
     }
     if (this._oAuth) {
       // Native getAccessToken always permits UI. connect explicitly controls UI
       // so alarm/startup scans cannot open authentication windows.
-      const token = await new Promise((resolve, reject) => this._oAuth.connect(this.allowPrompt, {
-        onSuccess: resolve,
-        onFailure: () => reject(new DiscoveryError('auth', 'Native OAuth authentication required')),
-      }));
+      const token = await new Promise((resolve, reject) =>
+        this._oAuth.connect(this.allowPrompt, {
+          onSuccess: resolve,
+          onFailure: () =>
+            reject(new DiscoveryError('auth', 'Native OAuth authentication required')),
+        }),
+      );
       channel.setRequestHeader('Authorization', `Bearer ${token}`, false);
     }
   }
@@ -74,11 +84,18 @@ export function makeTransport(account, source, allowPrompt) {
   const active = new Set();
   const requestMetadata = async (url, depth) => {
     safeTarget(url, account.url, account.allowLocalhost);
-    const request = new CalDavGenericRequest(session, calendar, 'PROPFIND', Services.io.newURI(url),
-      { Depth: String(depth) }, PROPFIND_BODY, 'application/xml; charset=utf-8');
+    const request = new CalDavGenericRequest(
+      session,
+      calendar,
+      'PROPFIND',
+      Services.io.newURI(url),
+      { Depth: String(depth) },
+      PROPFIND_BODY,
+      'application/xml; charset=utf-8',
+    );
     let redirects = 0;
     const originalRedirect = request.asyncOnChannelRedirect;
-    request.asyncOnChannelRedirect = function(oldChannel, newChannel, flags, callback) {
+    request.asyncOnChannelRedirect = function (oldChannel, newChannel, flags, callback) {
       try {
         safeTarget(newChannel.URI.spec, account.url, account.allowLocalhost);
         if (++redirects > 5) throw new Error('Too many redirects');
@@ -104,6 +121,8 @@ export function makeTransport(account, source, allowPrompt) {
       active.delete(request);
     }
   };
-  requestMetadata.cancel = () => { for (const r of active) (r.response?.nsirequest || r.channel).cancel(Cr.NS_ERROR_ABORT); };
+  requestMetadata.cancel = () => {
+    for (const r of active) (r.response?.nsirequest || r.channel).cancel(Cr.NS_ERROR_ABORT);
+  };
   return requestMetadata;
 }
