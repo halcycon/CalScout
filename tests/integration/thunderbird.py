@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Real Thunderbird + authenticated Radicale smoke test, in temporary profiles.
 
 Requires THUNDERBIRD_BIN and `python -m pip install radicale` in a test venv.

@@ -5,7 +5,7 @@
   "type": "module",
   "license": "MPL-2.0",
   "scripts": {
-    "test": "node --test tests/unit/*.test.mjs",
+    "test": "node --test tests/unit/*.test.mjs && python3 -m unittest discover -s tests/unit -p \"test_*.py\"",
     "build": "python3 scripts/package.py",
     "test:thunderbird": "python3 tests/integration/thunderbird.py",
     "check": "node scripts/check.mjs && npm run lint && npm run format:check",
@@ -23,5 +23,12 @@
   },
   "overrides": {
     "minimatch": "11.0.5"
-  }
+  },
+  "description": "Automatic CalDAV discovery and native calendar subscriptions for Thunderbird",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/halcycon/CalScout.git"
+  },
+  "homepage": "https://github.com/halcycon/CalScout",
+  "author": "Adam Camp"
 }

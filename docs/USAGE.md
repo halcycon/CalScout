@@ -2,7 +2,8 @@
 
 ## Install
 
-Build using `npm run build` (Python 3 required). In Thunderbird **156**, open
+Download the `.xpi` asset from [GitHub Releases](https://github.com/halcycon/CalScout/releases),
+or build using `npm run build` (Python 3 required). In Thunderbird **156**, open
 Add-ons and Themes, choose the gear menu → Install Add-on From File, and select
 `dist/calscout-0.1.0.xpi`. Thunderbird warns about full application access because
 CalScout uses a calendar Experiment. Normal unsigned installation was tested on

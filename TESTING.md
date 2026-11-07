@@ -9,12 +9,12 @@ npm test
 npm run build
 ```
 
-Node 22+ runs **25 tests** covering protocol parsing, real Stalwart recordings,
+Node 22+ runs **25 JavaScript tests** plus **4 Python packaging tests** covering protocol parsing, real Stalwart recordings,
 URL security, state reconciliation, scheduling policy and redacted UI errors.
 Regression tests cover distinct account sign-ins during a scan, stale partial
 results and explicit registration failure reporting. @xmldom/xmldom 0.9.12
 is a test dependency only. Python 3's standard library produces the XPI. The
-GitHub Actions workflow also runs Ruff on the Python fixtures and repeats these checks and verifies build reproducibility.
+GitHub Actions workflow also runs Ruff on Python helpers and tests and repeats these checks and verifies build reproducibility.
 
 ## Real Thunderbird + Radicale
 
@@ -131,3 +131,7 @@ Desloppify's local state is ignored by Git. Run `desloppify scan --path . --no-b
 with npm dependencies installed; its ESLint detector must succeed. The six manual
 review findings and verification are documented in docs/CODE_HEALTH.md. No
 subjective health score is claimed from a findings-only review.
+
+The packaging tests enforce matching manifest/package/tag versions, required
+license/notices, a ZIP-root manifest, deterministic bytes and SHA-256 checksums.
+CI uses the same build path for release assets and development artifacts.

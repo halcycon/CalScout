@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Disposable Stalwart 1.0.3 fixture. Run only inside an isolated network namespace.
 All credentials and paths here belong exclusively to generated test accounts.
 """

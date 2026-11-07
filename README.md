@@ -1,30 +1,81 @@
 # CalScout
 
-Automatic CalDAV calendar discovery for Thunderbird 156, using Thunderbird's
-native provider for all event synchronization. **Under active development.**
+[![Check and package](https://github.com/halcycon/CalScout/actions/workflows/check.yml/badge.svg)](https://github.com/halcycon/CalScout/actions/workflows/check.yml)
+[![License: MPL-2.0](https://img.shields.io/badge/License-MPL--2.0-blue.svg)](LICENSE)
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20CalScout-ff5e5b.svg)](https://ko-fi.com/thecuckoocamp)
 
-Implemented: principal/home-set discovery, recurring scans, optional native
-auto-subscription, first-run approval, persistent ignore/unsubscribe suppression,
-account isolation, backoff, notifications and a management screen. Native sync,
-discovery, UI/background messaging and automatic late-calendar registration are
-tested in real Thunderbird 156. Stalwart 1.0.3 group-sharing, later shares, read-only native sync and revocation pass with assisted discovery enabled and disabled.
+Automatically discover newly shared CalDAV calendars in Thunderbird, including
+calendars shared through a group. CalScout manages discovery and subscriptions;
+Thunderbird's native CalDAV provider handles all events and synchronisation.
 
-Run `npm ci` for development dependencies. Build with `npm run build`; test with `npm test`. The unsigned development XPI is
-written to `dist/calscout-0.1.0.xpi`. In a disposable Thunderbird 156 profile, use
-Add-ons Manager → gear → Debug Add-ons → Load Temporary Add-on → select
-`src/manifest.json`. Open the CalDAV Discovery toolbar action to list calendars
-and open Manage calendars. Existing secure CalDAV accounts are included automatically. For a new account, use Connect an account; Thunderbird handles authentication.
+**Development MVP for Thunderbird 156.x.** Tested with Stalwart 1.0.3 and Radicale
+3.9.0. Wider platform and OAuth-provider testing remains. The extension uses a
+privileged Experiment and requests full Thunderbird access.
 
-The Experiment has full Thunderbird privileges. No passwords are stored in
-extension storage; subscriptions remain registered when CalScout is disabled.
-The extension offers no deletion API. See [TESTING.md](TESTING.md),
-[ARCHITECTURE.md](ARCHITECTURE.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md),
-and [COMPATIBILITY.md](COMPATIBILITY.md) for evidence, limitations and next work.
+## Install
 
-License: MPL-2.0.
+1. Open [Releases](https://github.com/halcycon/CalScout/releases) and download the
+   `calscout-<version>.xpi` asset. Versions below 1.0 are marked as prereleases.
+2. In Thunderbird, open **Add-ons and Themes → gear menu → Install Add-on From File**
+   and select the XPI. Normal unsigned installation was verified on Thunderbird 156.
+3. Open **CalDAV Discovery → Manage calendars**, discover your accounts, choose
+   calendars and finish the initial review. Automatic subscription is optional.
 
-See [usage](docs/USAGE.md), [security model](docs/SECURITY.md), and [release procedure](docs/RELEASE.md). This is a development MVP; wider platform and OAuth-provider testing remains.
+See [usage and setup](docs/USAGE.md) for authentication, server discovery and
+preferences. Downloads include `SHA256SUMS` for checksum verification.
 
-Repository tooling follows [Tailor](https://github.com/wimpysworld/tailor).
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [repository maintenance](docs/REPOSITORY.md)
-for Just commands, lint tools and template updates.
+## What it does
+
+- Discovers principals, multiple calendar home sets, personal and shared calendars.
+- Checks at startup and periodically, with manual discovery available at any time.
+- Offers approval or automatic subscription after the first-run review.
+- Remembers ignored calendars and native manual unsubscriptions.
+- Keeps accounts isolated and backs off after failures.
+- Preserves subscriptions and local data when access disappears.
+
+Passwords stay in Thunderbird's native authentication system. There is no
+telemetry. Existing subscriptions remain usable when CalScout is disabled.
+
+## Build and contribute
+
+```sh
+npm ci
+npm run check
+npm test
+npm run build
+```
+
+Node 22+ and Python 3.10+ are required. The build writes an installable
+`dist/calscout-<version>.xpi` and `dist/SHA256SUMS`. Runtime source has no external
+library dependencies. For temporary development installation, load
+`src/manifest.json` through Thunderbird's **Debug Add-ons → Load Temporary Add-on**.
+
+Every branch push, pull request and manual **Check and package** run produces a
+`calscout-xpi` Actions artifact containing the XPI and checksum. A version tag such
+as `v0.1.0` runs the same checks and publishes those files to a GitHub release.
+See [release maintenance](docs/RELEASE.md) for version checks and publishing.
+
+[Contributing](CONTRIBUTING.md) · [Architecture](ARCHITECTURE.md) ·
+[Testing](TESTING.md) · [Compatibility](COMPATIBILITY.md) ·
+[Security model](docs/SECURITY.md) · [Repository tooling](docs/REPOSITORY.md)
+
+## License
+
+CalScout source is licensed under [MPL-2.0](LICENSE), a file-level copyleft
+license: distributed modifications to covered files remain open, while allowing
+integration with other software. This matches the project's Mozilla ecosystem
+and its original brief. See [third-party notices](THIRD_PARTY_NOTICES.md) for
+separately licensed repository templates and development tools.
+
+## Support and find me
+
+Built and maintained by **Adam Camp / CuckooAdam**. If CalScout is useful to you,
+you can [support its development on Ko-fi](https://ko-fi.com/thecuckoocamp).
+
+- [Website and links](https://links.thecuckoocamp.co.uk/@cuckooadam)
+- [GoToSocial / Fediverse — @adam@fedi.thecuckoocamp.co.uk](https://fedi.thecuckoocamp.co.uk/@adam)
+- [Bluesky — @thecuckoocamp.co.uk](https://bsky.app/profile/thecuckoocamp.co.uk)
+- [Ko-fi — The Cuckoo Camp](https://ko-fi.com/thecuckoocamp)
+
+For bugs and feature requests, use [GitHub Issues](https://github.com/halcycon/CalScout/issues).
+Report security vulnerabilities privately through [the security policy](SECURITY.md).

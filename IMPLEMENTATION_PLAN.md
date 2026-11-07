@@ -17,3 +17,7 @@ Mandatory Stalwart group-sharing tests pass in both assisted modes. See TESTING.
 Repository maintenance: Tailor v0.5.0 config, project-specific community templates,
 Dependabot, Just hooks, ESLint/Prettier/Ruff checks and code-health cleanup are in
 place. See docs/REPOSITORY.md and docs/CODE_HEALTH.md.
+
+Public distribution: GitHub source under MPL-2.0, author/support links, CI XPI
+artifacts with checksums, and version-tag release publication. ATN listing and an
+automatic update service remain separate future work.

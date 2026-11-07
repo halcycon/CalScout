@@ -13,6 +13,7 @@ mcp:
 
 repository:
   description: Automatic CalDAV discovery and native calendar subscriptions for Thunderbird
+  homepage: https://links.thecuckoocamp.co.uk/@cuckooadam
   has_wiki: false
   has_discussions: false
   has_projects: false
@@ -240,7 +241,7 @@ swatches:
     alteration: never
 
   - path: .github/FUNDING.yml
-    alteration: never
+    alteration: first-fit
 
   - path: cubic.yaml
     alteration: never

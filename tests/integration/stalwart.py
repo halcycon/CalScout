@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MPL-2.0
 """Real Stalwart group-sharing acceptance test, both assisted-discovery modes.
 
 Set STALWART_BIN (1.0.3) and THUNDERBIRD_BIN (156). On Linux this script re-execs

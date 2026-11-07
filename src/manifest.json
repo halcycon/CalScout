@@ -36,5 +36,7 @@
   "icons": {
     "32": "ui/icon.svg",
     "64": "ui/icon.svg"
-  }
+  },
+  "author": "Adam Camp",
+  "homepage_url": "https://github.com/halcycon/CalScout"
 }

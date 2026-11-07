@@ -18,7 +18,7 @@ Radicale 3.9.0, Thunderbird 156, Marionette chrome access in a disposable profil
 
 Distribution: normal unsigned XPI installation and restart persistence were verified
 on the target release, without changing signing preferences. The XPI is a development
-build with full application privileges; no public review or publication was performed.
+build with full application privileges; GitHub releases provide downloads; ATN review has not been performed.
 ATN listing requires its own review, including the Experiment justification. See
 [release procedure](docs/RELEASE.md) and the [Thunderbird review policy](https://thunderbird.github.io/atn-review-policy/).
 

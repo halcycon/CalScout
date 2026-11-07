@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MPL-2.0 */
 import { readdir, readFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 async function check(directory) {
