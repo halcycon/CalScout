@@ -8,7 +8,9 @@ THIRD_PARTY_NOTICES.md. No npm libraries or fixture servers ship in the extensio
 
 The **Check and package** workflow runs on branch pushes, pull requests and manual
 workflow dispatch. It runs JavaScript/Python checks and tests, builds the XPI,
-verifies reproducibility, and uploads the `calscout-xpi` artifact for 30 days.
+verifies reproducibility, and uploads the `calscout-xpi` artifact for 30 days. It then downloads the artifact
+and verifies its checksum again. GitHub Actions dependencies are pinned to
+reviewed release commits using the current Node 24 action runtime.
 Extract its `calscout-<version>.xpi` and `SHA256SUMS`. The artifact name is fixed;
 the filename and manifest carry the source version, not a separate CI version.
 
